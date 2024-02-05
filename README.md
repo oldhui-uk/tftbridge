@@ -16,12 +16,12 @@ To install `tftbridge` as a Klipper add-on:
 
 ```
 [tftbridge]
-tft_device=/dev/ttyAMA0
-tft_baud=250000
-tft_timeout=0
-klipper_device=/home/pi/printer_data/comms/klipper.serial
-klipper_baud=25000
-klipper_timeout=0
+tft_device: /dev/ttyAMA0
+tft_baud: 250000
+tft_timeout: 0
+klipper_device: /home/pi/printer_data/comms/serial/klipper.serial
+klipper_baud: 250000
+klipper_timeout: 0
 ```
 
 If your configuration is different, you may need to customise the above settings.
