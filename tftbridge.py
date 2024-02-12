@@ -26,7 +26,7 @@ class TftBridge:
         #
         #event to signal stopping threads
         #
-        self.stopEvent=theading.Event()
+		self.stopEvent=threading.Event()
 		#
 		#register event handlers
 		#
@@ -71,10 +71,10 @@ class TftBridge:
 			#
 			#if stopping thread event is set
 			#
-            if self.stopEvent.is_set():
+			if self.stopEvent.is_set():
 				self.tftSerial.close()		#close connection to TFT35
 				self.tftSerial=None			#clear property
-                break
+				break
 			#
 			#otherwise read from TFT35 and forward to Klipper
 			#
@@ -91,10 +91,10 @@ class TftBridge:
 			#
 			#if stopping thread event is set
 			#
-            if self.stopEvent.is_set():
+			if self.stopEvent.is_set():
 				self.klipperSerial.close()		#close connection to Klipper
 				self.klipperSerial=None			#clear property
-                break
+				break
 			#
 			#otherwise read from Klipper and forward to TFT35
 			#
