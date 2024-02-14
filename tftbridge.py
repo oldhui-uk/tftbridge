@@ -51,17 +51,22 @@ class TftBridge:
 		#create connections to devices if needed
 		#
 		if self.tftSerial==None:
-			self.tftSerial=self.openDevice(self.tftDevice,self.tftBaud,self.tftTimeout)
+			try:
+				self.tftSerial=self.openDevice(self.tftDevice,self.tftBaud,self.tftTimeout)
+			except:
+				self.tftSerial=None
+			
 		if self.klipperSerial==None:
-			self.klipperSerial=self.openDevice(self.klipperDevice,self.klipperBaud,self.klipperTimeout)
+			try:
+				self.klipperSerial=self.openDevice(self.klipperDevice,self.klipperBaud,self.klipperTimeout)
+			except:
+				self.klipperSerial=None
 		#
 		#create and start threads
 		#
 		self.stopEvent.clear()
-		k2tThread=threading.Thread(target=self.tft2klipper)
-		t2kThread=threading.Thread(target=self.klipper2tft)
-		k2tThread.start()
-		t2kThread.start()
+		threading.Thread(target=self.tft2klipper).start()
+		threading.Thread(target=self.klipper2tft).start()
 
 	#
 	#forward data from TFT35 to Klipper
@@ -72,16 +77,20 @@ class TftBridge:
 			#if stopping thread event is set
 			#
 			if self.stopEvent.is_set():
-				self.tftSerial.close()		#close connection to TFT35
+				if self.tftSerial!=None:
+					self.tftSerial.close()		#close connection to TFT35
 				self.tftSerial=None			#clear property
 				break
 			#
 			#otherwise read from TFT35 and forward to Klipper
 			#
 			if self.tftSerial!=None and self.klipperSerial!=None:
-				line=self.tftSerial.readline()
-				if line!='':			#if readline timeout, it returns an empty str
-					self.klipperSerial.write(line)
+				try:
+					line=self.tftSerial.readline()
+					if line!='':			#if readline timeout, it returns an empty str
+						self.klipperSerial.write(line)
+				except:
+					pass
 
 	#
 	#forward data from Klipper to TFT35
@@ -92,17 +101,20 @@ class TftBridge:
 			#if stopping thread event is set
 			#
 			if self.stopEvent.is_set():
-				self.klipperSerial.close()		#close connection to Klipper
+				if self.klipperSerial!=None:
+					self.klipperSerial.close()		#close connection to Klipper
 				self.klipperSerial=None			#clear property
 				break
 			#
 			#otherwise read from Klipper and forward to TFT35
 			#
 			if self.tftSerial!=None and self.klipperSerial!=None:
-				line=self.klipperSerial.readline()
-				if line!='':		#if readline timeout, it returns an empty str
-					self.tftSerial.write(line)
-
+				try:
+					line=self.klipperSerial.readline()
+					if line!='':		#if readline timeout, it returns an empty str
+						self.tftSerial.write(line)
+				except:
+					pass
 	#
 	#event handler when printer is disconnected
 	#
